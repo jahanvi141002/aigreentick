@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome FCM Token Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .token-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Chrome FCM Token Generator</h1>
+        <p>This tool helps you get real FCM tokens from Chrome for testing push notifications.</p>
+        
+        <div id="status"></div>
+        
+        <h3>Step 1: Initialize Firebase</h3>
+        <button id="initBtn" onclick="initializeFirebase()">Initialize Firebase</button>
+        
+        <h3>Step 2: Request Permission</h3>
+        <button id="permissionBtn" onclick="requestPermission()" disabled>Request Notification Permission</button>
+        <button id="resetBtn" onclick="resetPermissions()" style="background: #dc3545;">Reset & Try Again</button>
+        
+        <h3>Step 3: Get FCM Token</h3>
+        <button id="tokenBtn" onclick="getToken()" disabled>Get FCM Token</button>
+        
+        <h3>Your FCM Token:</h3>
+        <div id="tokenDisplay" class="token-display">Click "Get FCM Token" to generate...</div>
+        
+        <h3>Step 4: Test Push Notification</h3>
+        <button id="testBtn" onclick="testNotification()" disabled>Test Local Notification</button>
+        
+        <h3>Step 5: Send to Your Server</h3>
+        <p>Copy the token above and use it in your API calls:</p>
+        <div class="token-display">
+POST http://localhost:9091/api/v1/notifications/push
+Content-Type: application/json
+
+{
+  "deviceIds": ["YOUR_TOKEN_HERE"],
+  "title": "Test from Chrome",
+  "description": "This notification was sent from Chrome browser!",
+  "imageUrl": "https://via.placeholder.com/300x200.png"
+}
+        </div>
+        
+        <h3>🔧 Setup Instructions:</h3>
+        <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <h4>Step 1: Get Firebase Configuration</h4>
+            <ol>
+                <li>Go to <a href="https://console.firebase.google.com/project/aigreentick-40943" target="_blank">Firebase Console</a></li>
+                <li>Click ⚙️ Settings → Project Settings</li>
+                <li>Scroll down to "Your apps" section</li>
+                <li>Click "Add app" → Web (</>)</li>
+                <li>Copy the config object and replace the values above</li>
+            </ol>
+            
+            <h4>Step 2: Get VAPID Key</h4>
+            <ol>
+                <li>In Firebase Console, go to Project Settings</li>
+                <li>Click "Cloud Messaging" tab</li>
+                <li>Scroll to "Web Push certificates"</li>
+                <li>Click "Generate Key Pair"</li>
+                <li>Copy the public key and replace VAPID_KEY above</li>
+            </ol>
+        </div>
+        
+        <h3>📱 Usage Instructions:</h3>
+        <ol>
+            <li>Update Firebase config and VAPID key above</li>
+            <li>Click "Initialize Firebase"</li>
+            <li>Click "Request Notification Permission" (Chrome will ask for permission)</li>
+            <li>Click "Get FCM Token" to generate your unique token</li>
+            <li>Copy the token and use it in your API calls</li>
+            <li>Test with "Test Local Notification" to verify it works</li>
+        </ol>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+
+    <script>
+        // Firebase configuration - Get these from Firebase Console > Project Settings > General
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhJTOiokXRbrT2sB2aShE_x6-2VsbHnrk",
+  authDomain: "aigreentick-40943.firebaseapp.com",
+  projectId: "aigreentick-40943",
+  storageBucket: "aigreentick-40943.firebasestorage.app",
+  messagingSenderId: "953317414917",
+  appId: "1:953317414917:web:c915e6c9c18fa098cae46c",
+  measurementId: "G-5SHN2X6ZNH"
+        };
+
+        // VAPID Key - Get from Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
+        const VAPID_KEY = "BLNi9JiATEgZ8VcJWC75-lChB2APR3JsAfuFOr7LpldQWOctDe_CzswuTpOxS7Z5sworHdnK8BACPad1dC8J4ZY"; // Replace with your actual VAPID key
+
+        let messaging = null;
+        let currentToken = null;
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function initializeFirebase() {
+            try {
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                messaging = firebase.messaging();
+                
+                showStatus('✅ Firebase initialized successfully!', 'success');
+                document.getElementById('permissionBtn').disabled = false;
+                
+                // Listen for messages
+                messaging.onMessage((payload) => {
+                    console.log('Message received:', payload);
+                    showStatus('📱 Push notification received!', 'success');
+                });
+                
+            } catch (error) {
+                console.error('Firebase initialization error:', error);
+                showStatus('❌ Firebase initialization failed: ' + error.message, 'error');
+            }
+        }
+
+        function requestPermission() {
+            if (!messaging) {
+                showStatus('❌ Please initialize Firebase first', 'error');
+                return;
+            }
+
+            // Check current permission status
+            if (Notification.permission === 'denied') {
+                showStatus('❌ Notifications are blocked. Please enable them manually in Chrome settings.', 'error');
+                showPermissionInstructions();
+                return;
+            }
+
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    showStatus('✅ Notification permission granted!', 'success');
+                    document.getElementById('tokenBtn').disabled = false;
+                } else if (permission === 'denied') {
+                    showStatus('❌ Notification permission denied. Please enable manually.', 'error');
+                    showPermissionInstructions();
+                } else {
+                    showStatus('❌ Notification permission not granted', 'error');
+                }
+            }).catch((error) => {
+                console.error('Permission request error:', error);
+                showStatus('❌ Permission request failed: ' + error.message, 'error');
+            });
+        }
+
+        function showPermissionInstructions() {
+            const instructions = `
+                <div style="background: #f8d7da; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                    <h4>🔧 How to Enable Notifications:</h4>
+                    <ol>
+                        <li>Click the 🔒 lock icon in Chrome's address bar</li>
+                        <li>Set "Notifications" to "Allow"</li>
+                        <li>Refresh this page</li>
+                        <li>Or go to Chrome Settings → Privacy and Security → Site Settings → Notifications</li>
+                        <li>Add this site to "Allowed to send notifications"</li>
+                    </ol>
+                    <p><strong>Alternative:</strong> Right-click on the page → "Site information" → "Notifications" → "Allow"</p>
+                </div>
+            `;
+            document.getElementById('status').innerHTML += instructions;
+        }
+
+        function getToken() {
+            if (!messaging) {
+                showStatus('❌ Please initialize Firebase first', 'error');
+                return;
+            }
+
+            messaging.getToken({ vapidKey: VAPID_KEY }).then((token) => {
+                if (token) {
+                    currentToken = token;
+                    document.getElementById('tokenDisplay').textContent = token;
+                    showStatus('✅ FCM Token generated successfully!', 'success');
+                    document.getElementById('testBtn').disabled = false;
+                } else {
+                    showStatus('❌ No registration token available', 'error');
+                }
+            }).catch((error) => {
+                console.error('Token generation error:', error);
+                showStatus('❌ Token generation failed: ' + error.message, 'error');
+            });
+        }
+
+        function testNotification() {
+            if (!currentToken) {
+                showStatus('❌ Please get FCM token first', 'error');
+                return;
+            }
+
+            // Test local notification
+            if (Notification.permission === 'granted') {
+                new Notification('Test Notification', {
+                    body: 'This is a test notification from Chrome!',
+                    icon: 'https://via.placeholder.com/64x64.png'
+                });
+                showStatus('✅ Local notification sent!', 'success');
+            } else {
+                showStatus('❌ Notification permission not granted', 'error');
+            }
+        }
+
+        // Check permission status on page load
+        window.addEventListener('load', () => {
+            checkPermissionStatus();
+        });
+
+        function checkPermissionStatus() {
+            const permission = Notification.permission;
+            const statusDiv = document.getElementById('status');
+            
+            if (permission === 'granted') {
+                statusDiv.innerHTML = '<div class="status success">✅ Notifications are already enabled!</div>';
+                document.getElementById('permissionBtn').disabled = true;
+                document.getElementById('tokenBtn').disabled = false;
+            } else if (permission === 'denied') {
+                statusDiv.innerHTML = '<div class="status error">❌ Notifications are blocked. Please enable them manually.</div>';
+                showPermissionInstructions();
+            } else {
+                statusDiv.innerHTML = '<div class="status info">ℹ️ Click "Request Notification Permission" to enable notifications.</div>';
+            }
+        }
+
+        function resetPermissions() {
+            showStatus('🔄 Resetting permissions...', 'info');
+            
+            // Clear any existing status
+            setTimeout(() => {
+                document.getElementById('status').innerHTML = '';
+                checkPermissionStatus();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

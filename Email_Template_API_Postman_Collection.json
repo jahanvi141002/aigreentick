@@ -1,0 +1,487 @@
+{
+  "info": {
+    "name": "AI Green Tick - Email Template API",
+    "description": "Complete test collection for Email Template API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "health"]
+        },
+        "description": "Check if the email template service is healthy"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Welcome Template",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"welcome-email\",\n  \"title\": \"Welcome to AI Green Tick!\",\n  \"body\": \"Dear {{name}}, welcome to our platform! We are excited to have you on board. Your account has been successfully created.\",\n  \"isActive\": true,\n  \"createdBy\": \"admin@aigreentick.com\",\n  \"modifiedBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Create a welcome email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Password Reset Template",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"password-reset\",\n  \"title\": \"Reset Your Password - AI Green Tick\",\n  \"body\": \"Dear {{name}}, you requested a password reset. Click the link below to reset your password: {{resetLink}} This link will expire in 24 hours.\",\n  \"isActive\": true,\n  \"createdBy\": \"admin@aigreentick.com\",\n  \"modifiedBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Create a password reset email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Order Confirmation Template",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"order-confirmation\",\n  \"title\": \"Order Confirmation - Order #{{orderNumber}}\",\n  \"body\": \"Dear {{customerName}}, thank you for your order! Order Details: Order Number: {{orderNumber}} Total Amount: ${{totalAmount}} Expected Delivery: {{deliveryDate}}\",\n  \"isActive\": true,\n  \"createdBy\": \"admin@aigreentick.com\",\n  \"modifiedBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Create an order confirmation email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Newsletter Template",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"newsletter-monthly\",\n  \"title\": \"Monthly Newsletter - {{month}} {{year}}\",\n  \"body\": \"Dear {{subscriberName}}, here's your monthly newsletter with the latest updates from AI Green Tick. Featured Articles: {{featuredArticles}}\",\n  \"isActive\": true,\n  \"createdBy\": \"admin@aigreentick.com\",\n  \"modifiedBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Create a monthly newsletter email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Inactive Template",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"account-deactivation\",\n  \"title\": \"Account Deactivation Notice\",\n  \"body\": \"Dear {{name}}, your account has been deactivated due to inactivity. If you wish to reactivate your account, please contact our support team.\",\n  \"isActive\": false,\n  \"createdBy\": \"admin@aigreentick.com\",\n  \"modifiedBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Create an inactive email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Templates (Paginated)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates?page=0&size=5&sortBy=name&sortDir=asc",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "5"
+            },
+            {
+              "key": "sortBy",
+              "value": "name"
+            },
+            {
+              "key": "sortDir",
+              "value": "asc"
+            }
+          ]
+        },
+        "description": "Get all email templates with pagination"
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Templates (No Pagination)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/all",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "all"]
+        },
+        "description": "Get all email templates without pagination"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Template by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "1"]
+        },
+        "description": "Get a specific email template by ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Template by Name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/name/welcome-email",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "name", "welcome-email"]
+        },
+        "description": "Get a specific email template by name"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Active Templates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/active",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "active"]
+        },
+        "description": "Get all active email templates"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Inactive Templates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/inactive",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "inactive"]
+        },
+        "description": "Get all inactive email templates"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Templates by Name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/search/name?q=welcome",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "search", "name"],
+          "query": [
+            {
+              "key": "q",
+              "value": "welcome"
+            }
+          ]
+        },
+        "description": "Search email templates by name"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Templates by Title",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/search/title?q=password",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "search", "title"],
+          "query": [
+            {
+              "key": "q",
+              "value": "password"
+            }
+          ]
+        },
+        "description": "Search email templates by title"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Template",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"welcome-email-v2\",\n  \"title\": \"Welcome to AI Green Tick - Enhanced!\",\n  \"body\": \"Dear {{name}}, welcome to our enhanced platform! We've added new features just for you. Your account is ready to use.\",\n  \"isActive\": true,\n  \"modifiedBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "1"]
+        },
+        "description": "Update an existing email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Activate Template",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/5/activate?modifiedBy=admin@aigreentick.com",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "5", "activate"],
+          "query": [
+            {
+              "key": "modifiedBy",
+              "value": "admin@aigreentick.com"
+            }
+          ]
+        },
+        "description": "Activate a specific email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Deactivate Template",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/3/deactivate?modifiedBy=admin@aigreentick.com",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "3", "deactivate"],
+          "query": [
+            {
+              "key": "modifiedBy",
+              "value": "admin@aigreentick.com"
+            }
+          ]
+        },
+        "description": "Deactivate a specific email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Template Statistics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/statistics",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "statistics"]
+        },
+        "description": "Get email template statistics"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Template",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "5"]
+        },
+        "description": "Delete a specific email template"
+      },
+      "response": []
+    },
+    {
+      "name": "Error Test - Missing Fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"title\": \"\",\n  \"body\": \"\",\n  \"isActive\": true,\n  \"createdBy\": \"\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Test validation with missing required fields"
+      },
+      "response": []
+    },
+    {
+      "name": "Error Test - Duplicate Name",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"welcome-email\",\n  \"title\": \"Another Welcome Email\",\n  \"body\": \"This should fail because name already exists\",\n  \"isActive\": true,\n  \"createdBy\": \"admin@aigreentick.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates"]
+        },
+        "description": "Test duplicate name validation"
+      },
+      "response": []
+    },
+    {
+      "name": "Error Test - Non-existent Template",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9091/api/v1/email-templates/999",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9091",
+          "path": ["api", "v1", "email-templates", "999"]
+        },
+        "description": "Test getting non-existent template"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9091/api/v1/email-templates",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Green Tick Notification Service - Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section h2 {
+            color: #34495e;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button.success {
+            background-color: #27ae60;
+        }
+        button.success:hover {
+            background-color: #229954;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .response.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .response.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .response.info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .quick-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .status.online {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.offline {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 AI Green Tick Notification Service - Test Page</h1>
+        
+        <div id="status" class="status">
+            <span id="statusText">Checking service status...</span>
+        </div>
+
+        <!-- Quick Tests Section -->
+        <div class="section">
+            <h2>🚀 Quick Tests</h2>
+            <div class="quick-test">
+                <button onclick="testHealth()">Health Check</button>
+                <button onclick="testEmailValidation()">Email Validation</button>
+                <button onclick="testTokenValidation()">Token Validation</button>
+                <button onclick="testBasicEmail()">Basic Email</button>
+                <button onclick="testBasicPush()">Basic Push</button>
+                <button onclick="testTopicPush()">Topic Push</button>
+            </div>
+        </div>
+
+        <!-- Email Notification Section -->
+        <div class="section">
+            <h2>📧 Email Notification Tests</h2>
+            
+            <div class="form-group">
+                <label for="emailTo">To (comma-separated):</label>
+                <input type="text" id="emailTo" placeholder="test@example.com, user@example.com" value="test@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="emailCc">CC (comma-separated, optional):</label>
+                <input type="text" id="emailCc" placeholder="manager@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="emailTitle">Title:</label>
+                <input type="text" id="emailTitle" placeholder="Email Subject" value="Test Email from AI Green Tick">
+            </div>
+            
+            <div class="form-group">
+                <label for="emailBody">Body:</label>
+                <textarea id="emailBody" rows="4" placeholder="Email content">This is a test email notification from AI Green Tick Notification Service. If you receive this, the email functionality is working correctly!</textarea>
+            </div>
+            
+            <button onclick="sendEmail()">Send Email</button>
+            <button onclick="sendEmailAsync()">Send Email (Async)</button>
+            
+            <div id="emailResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Push Notification Section -->
+        <div class="section">
+            <h2>📱 Push Notification Tests</h2>
+            
+            <div class="form-group">
+                <label for="pushDeviceIds">Device IDs (comma-separated):</label>
+                <input type="text" id="pushDeviceIds" placeholder="device_token_1, device_token_2" value="dummy_token_123, dummy_token_456">
+            </div>
+            
+            <div class="form-group">
+                <label for="pushTitle">Title:</label>
+                <input type="text" id="pushTitle" placeholder="Push notification title" value="Test Push Notification">
+            </div>
+            
+            <div class="form-group">
+                <label for="pushDescription">Description:</label>
+                <textarea id="pushDescription" rows="3" placeholder="Push notification description">This is a test push notification from Firebase Cloud Messaging!</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="pushImageUrl">Image URL (optional):</label>
+                <input type="text" id="pushImageUrl" placeholder="https://example.com/image.jpg" value="https://via.placeholder.com/300x200.png">
+            </div>
+            
+            <button onclick="sendPush()">Send Push</button>
+            <button onclick="sendPushAsync()">Send Push (Async)</button>
+            
+            <div id="pushResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Topic Push Notification Section -->
+        <div class="section">
+            <h2>📢 Topic Push Notification Tests</h2>
+            
+            <div class="form-group">
+                <label for="topicName">Topic Name:</label>
+                <input type="text" id="topicName" placeholder="news, updates, alerts" value="test_topic">
+            </div>
+            
+            <div class="form-group">
+                <label for="topicTitle">Title:</label>
+                <input type="text" id="topicTitle" placeholder="Topic notification title" value="Topic Test Notification">
+            </div>
+            
+            <div class="form-group">
+                <label for="topicDescription">Description:</label>
+                <textarea id="topicDescription" rows="3" placeholder="Topic notification description">This is a test topic-based push notification!</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="topicImageUrl">Image URL (optional):</label>
+                <input type="text" id="topicImageUrl" placeholder="https://example.com/image.jpg" value="https://via.placeholder.com/300x200.png">
+            </div>
+            
+            <button onclick="sendTopicPush()">Send Topic Push</button>
+            <button onclick="sendTopicPushAsync()">Send Topic Push (Async)</button>
+            
+            <div id="topicResponse" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Combined Notification Section -->
+        <div class="section">
+            <h2>🔄 Combined Notification Tests</h2>
+            
+            <div class="form-group">
+                <label for="combinedEmailTo">Email To:</label>
+                <input type="text" id="combinedEmailTo" placeholder="test@example.com" value="test@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="combinedPushDeviceIds">Push Device IDs:</label>
+                <input type="text" id="combinedPushDeviceIds" placeholder="device_token_1" value="dummy_token_123">
+            </div>
+            
+            <div class="form-group">
+                <label for="combinedTitle">Title (for both):</label>
+                <input type="text" id="combinedTitle" placeholder="Combined notification title" value="Combined Test Notification">
+            </div>
+            
+            <div class="form-group">
+                <label for="combinedMessage">Message:</label>
+                <textarea id="combinedMessage" rows="3" placeholder="Message for both email and push">This is a test of combined email and push notifications!</textarea>
+            </div>
+            
+            <button onclick="sendCombined()">Send Both</button>
+            <button onclick="sendCombinedAsync()">Send Both (Async)</button>
+            
+            <div id="combinedResponse" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:9090/api/v1/notifications';
+
+        // Check service status on page load
+        window.onload = function() {
+            testHealth();
+        };
+
+        async function makeRequest(method, endpoint, data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(`${BASE_URL}${endpoint}`, options);
+                const result = await response.json();
+                return { success: response.ok, data: result, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function showResponse(elementId, response, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `response ${isSuccess ? 'success' : 'error'}`;
+            element.textContent = JSON.stringify(response, null, 2);
+        }
+
+        async function testHealth() {
+            const result = await makeRequest('GET', '/health');
+            const statusElement = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            
+            if (result.success) {
+                statusElement.className = 'status online';
+                statusText.textContent = '✅ Service is online and healthy';
+            } else {
+                statusElement.className = 'status offline';
+                statusText.textContent = '❌ Service is offline or not responding';
+            }
+        }
+
+        async function testEmailValidation() {
+            const result = await makeRequest('GET', '/validate/email?email=test@example.com');
+            showResponse('emailResponse', result, result.success);
+        }
+
+        async function testTokenValidation() {
+            const result = await makeRequest('GET', '/validate/device-token?token=abc123def456');
+            showResponse('pushResponse', result, result.success);
+        }
+
+        async function testBasicEmail() {
+            const data = {
+                to: ['test@example.com'],
+                title: 'Quick Test Email',
+                body: 'This is a quick test email from the web interface.'
+            };
+            const result = await makeRequest('POST', '/email', data);
+            showResponse('emailResponse', result, result.success);
+        }
+
+        async function testBasicPush() {
+            const data = {
+                deviceIds: ['dummy_token_123'],
+                title: 'Quick Test Push',
+                description: 'This is a quick test push notification.',
+                imageUrl: 'https://via.placeholder.com/300x200.png'
+            };
+            const result = await makeRequest('POST', '/push', data);
+            showResponse('pushResponse', result, result.success);
+        }
+
+        async function testTopicPush() {
+            const result = await makeRequest('POST', '/push/topic?topic=test_topic&title=Quick Topic Test&description=This is a quick topic test&imageUrl=https://via.placeholder.com/300x200.png');
+            showResponse('topicResponse', result, result.success);
+        }
+
+        async function sendEmail() {
+            const to = document.getElementById('emailTo').value.split(',').map(email => email.trim());
+            const cc = document.getElementById('emailCc').value ? 
+                document.getElementById('emailCc').value.split(',').map(email => email.trim()) : null;
+            
+            const data = {
+                to: to,
+                title: document.getElementById('emailTitle').value,
+                body: document.getElementById('emailBody').value
+            };
+            
+            if (cc) data.cc = cc;
+            
+            const result = await makeRequest('POST', '/email', data);
+            showResponse('emailResponse', result, result.success);
+        }
+
+        async function sendEmailAsync() {
+            const to = document.getElementById('emailTo').value.split(',').map(email => email.trim());
+            const cc = document.getElementById('emailCc').value ? 
+                document.getElementById('emailCc').value.split(',').map(email => email.trim()) : null;
+            
+            const data = {
+                to: to,
+                title: document.getElementById('emailTitle').value,
+                body: document.getElementById('emailBody').value
+            };
+            
+            if (cc) data.cc = cc;
+            
+            const result = await makeRequest('POST', '/email/async', data);
+            showResponse('emailResponse', result, result.success);
+        }
+
+        async function sendPush() {
+            const data = {
+                deviceIds: document.getElementById('pushDeviceIds').value.split(',').map(id => id.trim()),
+                title: document.getElementById('pushTitle').value,
+                description: document.getElementById('pushDescription').value,
+                imageUrl: document.getElementById('pushImageUrl').value || null
+            };
+            
+            const result = await makeRequest('POST', '/push', data);
+            showResponse('pushResponse', result, result.success);
+        }
+
+        async function sendPushAsync() {
+            const data = {
+                deviceIds: document.getElementById('pushDeviceIds').value.split(',').map(id => id.trim()),
+                title: document.getElementById('pushTitle').value,
+                description: document.getElementById('pushDescription').value,
+                imageUrl: document.getElementById('pushImageUrl').value || null
+            };
+            
+            const result = await makeRequest('POST', '/push/async', data);
+            showResponse('pushResponse', result, result.success);
+        }
+
+        async function sendTopicPush() {
+            const topic = document.getElementById('topicName').value;
+            const title = document.getElementById('topicTitle').value;
+            const description = document.getElementById('topicDescription').value;
+            const imageUrl = document.getElementById('topicImageUrl').value || null;
+            
+            const endpoint = `/push/topic?topic=${encodeURIComponent(topic)}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
+            const finalEndpoint = imageUrl ? `${endpoint}&imageUrl=${encodeURIComponent(imageUrl)}` : endpoint;
+            
+            const result = await makeRequest('POST', finalEndpoint);
+            showResponse('topicResponse', result, result.success);
+        }
+
+        async function sendTopicPushAsync() {
+            const topic = document.getElementById('topicName').value;
+            const title = document.getElementById('topicTitle').value;
+            const description = document.getElementById('topicDescription').value;
+            const imageUrl = document.getElementById('topicImageUrl').value || null;
+            
+            const endpoint = `/push/topic/async?topic=${encodeURIComponent(topic)}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
+            const finalEndpoint = imageUrl ? `${endpoint}&imageUrl=${encodeURIComponent(imageUrl)}` : endpoint;
+            
+            const result = await makeRequest('POST', finalEndpoint);
+            showResponse('topicResponse', result, result.success);
+        }
+
+        async function sendCombined() {
+            const data = {
+                emailRequest: {
+                    to: [document.getElementById('combinedEmailTo').value],
+                    title: document.getElementById('combinedTitle').value,
+                    body: document.getElementById('combinedMessage').value
+                },
+                pushRequest: {
+                    deviceIds: [document.getElementById('combinedPushDeviceIds').value],
+                    title: document.getElementById('combinedTitle').value,
+                    description: document.getElementById('combinedMessage').value,
+                    imageUrl: 'https://via.placeholder.com/300x200.png'
+                }
+            };
+            
+            const result = await makeRequest('POST', '/both', data);
+            showResponse('combinedResponse', result, result.success);
+        }
+
+        async function sendCombinedAsync() {
+            const data = {
+                emailRequest: {
+                    to: [document.getElementById('combinedEmailTo').value],
+                    title: document.getElementById('combinedTitle').value,
+                    body: document.getElementById('combinedMessage').value
+                },
+                pushRequest: {
+                    deviceIds: [document.getElementById('combinedPushDeviceIds').value],
+                    title: document.getElementById('combinedTitle').value,
+                    description: document.getElementById('combinedMessage').value,
+                    imageUrl: 'https://via.placeholder.com/300x200.png'
+                }
+            };
+            
+            const result = await makeRequest('POST', '/both/async', data);
+            showResponse('combinedResponse', result, result.success);
+        }
+    </script>
+</body>
+</html>

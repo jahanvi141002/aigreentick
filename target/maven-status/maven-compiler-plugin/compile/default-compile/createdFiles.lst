@@ -1,0 +1,15 @@
+com\aigreentick\notification\dto\EmailTemplateUpdateRequest.class
+com\aigreentick\notification\service\EmailTemplateService.class
+com\aigreentick\notification\repository\EmailTemplateRepository.class
+com\aigreentick\notification\config\MongoConfig.class
+com\aigreentick\notification\entity\EmailTemplate.class
+com\aigreentick\notification\exception\GlobalExceptionHandler.class
+com\aigreentick\notification\controller\EmailTemplateController.class
+com\aigreentick\notification\exception\EmailTemplateNotFoundException.class
+com\aigreentick\notification\exception\EmailTemplateAlreadyExistsException.class
+com\aigreentick\notification\dto\ApiResponse.class
+com\aigreentick\notification\dto\EmailTemplateRequest.class
+com\aigreentick\notification\AigreentickNotificationApplication.class
+com\aigreentick\notification\dto\EmailTemplateResponse.class
+com\aigreentick\notification\service\EmailTemplateService$TemplateStatistics.class
+com\aigreentick\notification\controller\NotificationController.class
