@@ -23,6 +23,7 @@ public class NotificationService {
 
     private final JavaMailSender mailSender;
     private final FirebaseMessaging firebaseMessaging;
+    private final NotificationLogService notificationLogService;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     /**
@@ -51,12 +52,28 @@ public class NotificationService {
                     mailSender.send(message);
                     successCount++;
                     log.info("Email sent successfully to: {}", toEmail);
+                    notificationLogService.saveEmailLog(
+                            toEmail,
+                            request.getCc(),
+                            request.getTitle(),
+                            request.getBody(),
+                            true,
+                            null
+                    );
                     
                 } catch (Exception e) {
                     failureCount++;
                     String error = "Failed to send email to " + toEmail + ": " + e.getMessage();
                     errors.add(error);
                     log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
+                    notificationLogService.saveEmailLog(
+                            toEmail,
+                            request.getCc(),
+                            request.getTitle(),
+                            request.getBody(),
+                            false,
+                            e.getMessage()
+                    );
                 }
             }
 
@@ -111,12 +128,28 @@ public class NotificationService {
                     String response = firebaseMessaging.send(message);
                     successCount++;
                     log.info("Push notification sent successfully to device: {}, response: {}", deviceId, response);
+                    notificationLogService.savePushLog(
+                            deviceId,
+                            request.getTitle(),
+                            request.getDescription(),
+                            request.getImageUrl(),
+                            true,
+                            null
+                    );
                     
                 } catch (FirebaseMessagingException e) {
                     failureCount++;
                     String error = "Failed to send push notification to device " + deviceId + ": " + e.getMessage();
                     errors.add(error);
                     log.error("Failed to send push notification to device {}: {}", deviceId, e.getMessage());
+                    notificationLogService.savePushLog(
+                            deviceId,
+                            request.getTitle(),
+                            request.getDescription(),
+                            request.getImageUrl(),
+                            false,
+                            e.getMessage()
+                    );
                 }
             }
 

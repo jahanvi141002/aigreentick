@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AigreentickNotificationApplication {
+public class AigreentickNotificationApplication {add
 
     public static void main(String[] args) {
         SpringApplication.run(AigreentickNotificationApplication.class, args);
